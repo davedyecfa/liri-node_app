@@ -1,13 +1,28 @@
-var keys = require("./keys.js");
-var rp = require("request-promise");
-var twitter = require("twitter");
-var spotify = require("spotify");
+const keys = require("./keys.js");
+const rp = require("request-promise");
+const Twitter = require("twitter");
+const spotify = require("spotify");
 // console.log(keys);
 
 // Global Variables//=============================================================================================
 
 const action = process.argv[2];
+const client = new Twitter(keys.twitterKeys);
 
+// Functions ==============================================================================================
+
+    function getTweets() {
+        const params = { screen_name: 'potus', count: 10 };
+        client.get('statuses/user_timeline', params, function (error, tweets, response) {
+            if (!error) {
+                for (var i = 0; i < tweets.length; i++) {
+                    console.log('%j \n', tweets[i].text);
+                }
+            }
+        })
+    }
+
+// ======================================================================================================
 
 
 // ================================================================================================================
@@ -22,7 +37,7 @@ if (action === 'movie-this') {
         uri: "http://www.omdbapi.com/?t=" + movieName,
         json: true
     }).then((movie) => {
-        console.log(movie);
+        // console.log(movie);
         console.log("Movie Title: " + movie.Title);
         console.log("Movie Year: " + movie.Year);
         console.log("IMBD Rating: " + movie.imdbRating);
@@ -34,12 +49,15 @@ if (action === 'movie-this') {
     }).catch((err) => {
         console.log("err")
     })
-
-
 }
+// ================================================================================================================
 
+// Get Twiiter//============================================================================================
 
-
+else if (action === 'my-tweets') {
+    console.log("my-tweets");
+    getTweets();
+};
 
 
 
